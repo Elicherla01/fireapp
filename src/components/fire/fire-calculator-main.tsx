@@ -63,7 +63,7 @@ export function FireCalculatorMain() {
   // Core parameters
   const [multiplier, setMultiplier] = useState<number>(30); // Default 30x (recommended for India)
   const [currentCorpus, setCurrentCorpus] = useState<number>(12000000); // Default ₹1.2 Cr
-  const [currentAge, setCurrentAge] = useState<number>(33); // Age 33
+  const [currentAge, setCurrentAge] = useState<number>(40); // Default current age: 40
   const [expectedReturn, setExpectedReturn] = useState<number>(12); // 12% portfolio CAGR
   const [expectedInflation, setExpectedInflation] = useState<number>(6.0); // 6% Indian inflation
   const [monthlySavings, setMonthlySavings] = useState<number>(125000); // ₹1.25 Lakh/month SIP
@@ -157,7 +157,7 @@ export function FireCalculatorMain() {
     setActiveMode('itemized');
     setMultiplier(30);
     setCurrentCorpus(12000000);
-    setCurrentAge(33);
+    setCurrentAge(40);
     setExpectedReturn(12);
     setExpectedInflation(6.0);
     setMonthlySavings(125000);
@@ -254,7 +254,7 @@ Check out FIRE Works!`;
                   : '35+ Yrs'}
               </div>
               <div className="text-xs text-muted-foreground">
-                {simulation.fireAge !== null ? `Retire at Age ${simulation.fireAge}` : 'Increase monthly SIP'}
+                {simulation.fireAge !== null ? `Retire at Age ${simulation.fireAge} (from Age ${currentAge})` : 'Increase monthly SIP'}
               </div>
             </div>
           </div>
@@ -659,23 +659,60 @@ Check out FIRE Works!`;
                 </div>
               </div>
 
-              {/* Current Age */}
-              <div className="space-y-1.5">
+              {/* Current Age Option */}
+              <div className="space-y-2.5 p-3.5 rounded-xl bg-background/60 border border-border/80">
                 <div className="flex items-center justify-between text-xs">
-                  <Label htmlFor={currentAgeInputId} className="text-xs text-muted-foreground">
-                    Current Age (Years)
+                  <Label htmlFor={currentAgeInputId} className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5 text-primary" />
+                    <span>Your Current Age</span>
                   </Label>
-                  <span className="font-mono font-semibold text-primary">{currentAge} Years Old</span>
+                  <span className="font-mono font-bold text-primary text-sm px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20">
+                    {currentAge} Years Old
+                  </span>
                 </div>
-                <Input
-                  id={currentAgeInputId}
-                  type="number"
-                  value={currentAge}
-                  onChange={(e) => setCurrentAge(Math.max(18, Math.min(80, parseInt(e.target.value, 10) || 30)))}
-                  className="font-mono text-sm"
-                  min={18}
-                  max={80}
-                />
+
+                <div className="flex items-center gap-3">
+                  <div className="w-24 shrink-0">
+                    <Input
+                      id={currentAgeInputId}
+                      type="number"
+                      value={currentAge}
+                      onChange={(e) => setCurrentAge(Math.max(18, Math.min(80, parseInt(e.target.value, 10) || 40)))}
+                      className="font-mono text-sm h-9 text-center font-bold"
+                      min={18}
+                      max={80}
+                      step={1}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Slider
+                      value={[currentAge]}
+                      min={20}
+                      max={70}
+                      step={1}
+                      onValueChange={(val) => setCurrentAge(val[0])}
+                    />
+                  </div>
+                </div>
+
+                {/* Quick Age Presets */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                  <span className="text-[10px] text-muted-foreground mr-1 uppercase font-semibold">Presets:</span>
+                  {[25, 30, 35, 40, 45, 50, 55, 60].map((agePreset) => (
+                    <button
+                      key={agePreset}
+                      type="button"
+                      onClick={() => setCurrentAge(agePreset)}
+                      className={`px-2 py-0.5 rounded-md text-[11px] font-mono transition-all ${
+                        currentAge === agePreset
+                          ? 'bg-primary text-primary-foreground font-bold shadow-xs'
+                          : 'bg-secondary/70 text-muted-foreground hover:text-foreground hover:bg-secondary border border-border/60'
+                      }`}
+                    >
+                      {agePreset}y{agePreset === 40 ? ' ★' : ''}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Visual Progress Bar */}
