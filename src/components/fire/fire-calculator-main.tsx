@@ -18,6 +18,7 @@ import {
 import { ProjectionChart } from './projection-chart';
 import { FireTiersPanel } from './fire-tiers-panel';
 import { CashflowDistribution } from './cashflow-distribution';
+import { CompoundingAssumptions } from './compounding-assumptions';
 import {
   Flame,
   IndianRupee,
@@ -860,13 +861,27 @@ Check out FIRE Works!`;
             Interactive timeline charting your accumulated wealth vs inflation-adjusted FIRE targets
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <ProjectionChart
             points={simulation.points}
             yearsToFire={simulation.yearsToFire}
             fireAge={simulation.fireAge}
             fireCorpusAtAchieve={simulation.fireCorpusAtAchieve}
             expectedInflation={expectedInflation}
+          />
+
+          {/* Mathematical Calculations & Compounding Assumptions */}
+          <CompoundingAssumptions
+            expectedReturn={expectedReturn}
+            expectedInflation={expectedInflation}
+            monthlySavings={monthlySavings}
+            yearlyStepUp={yearlyStepUp}
+            currentCorpus={currentCorpus}
+            annualExpense={annualExpense}
+            multiplier={multiplier}
+            currentAge={currentAge}
+            yearsToFire={simulation.yearsToFire}
+            fireAge={simulation.fireAge}
           />
         </CardContent>
       </Card>
